@@ -14,6 +14,10 @@ export interface IFacility extends Document {
   approvalStatus: "PENDING" | "APPROVED" | "REJECTED";
   isActive: boolean;
   bookingCount: number;
+  /** Soft-delete timestamp — null means the facility is not deleted */
+  deletedAt: Date | null;
+  /** Audit trail — ID of the user who last modified this facility */
+  updatedBy: mongoose.Types.ObjectId | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -76,6 +80,17 @@ const facilitySchema = new Schema<IFacility>(
       type: Number,
       default: 0,
     },
+    /** Soft-delete: set to a Date when the facility is deleted, null otherwise */
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+    /** Audit trail: the User._id of whoever last updated this document */
+    updatedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -87,5 +102,7 @@ facilitySchema.index({ sports: 1 });
 facilitySchema.index({ location: 1 });
 facilitySchema.index({ rating: 1 });
 facilitySchema.index({ bookingCount: -1 });
+// Index for efficient soft-delete queries
+facilitySchema.index({ ownerId: 1, deletedAt: 1 });
 
 export const Facility = mongoose.model<IFacility>("Facility", facilitySchema);
