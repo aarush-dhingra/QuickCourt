@@ -11,17 +11,17 @@ const timeString = z
 export const createCourtSchema = z
   .object({
     name: z
-      .string({ required_error: "Court name is required" })
+      .string({ error: "Court name is required" })
       .min(1, "Court name cannot be empty")
       .max(100)
       .trim(),
     sportType: z
-      .string({ required_error: "Sport type is required" })
+      .string({ error: "Sport type is required" })
       .min(1)
       .trim(),
     /** Base / standard hourly rate */
     pricePerHour: z.coerce
-      .number({ required_error: "pricePerHour is required" })
+      .number({ error: "pricePerHour is required" })
       .min(0, "Price cannot be negative"),
     /**
      * Optional peak-hour rate. When > 0 and peakHours is configured,

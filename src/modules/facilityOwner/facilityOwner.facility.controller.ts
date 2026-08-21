@@ -44,7 +44,7 @@ export class FacilityOwnerFacilityController {
   static async getFacility(req: Request, res: Response, next: NextFunction) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId } = req.params;
+      const { facilityId } = req.params as Record<string, string>;
       const result = await FacilityOwnerFacilityService.getFacilityById(
         ownerId,
         facilityId
@@ -105,7 +105,7 @@ export class FacilityOwnerFacilityController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId } = req.params;
+      const { facilityId } = req.params as Record<string, string>;
 
       const validated = updateFacilitySchema.parse(req.body);
 
@@ -145,7 +145,7 @@ export class FacilityOwnerFacilityController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId } = req.params;
+      const { facilityId } = req.params as Record<string, string>;
 
       const result = await FacilityOwnerFacilityService.softDeleteFacility(
         ownerId,

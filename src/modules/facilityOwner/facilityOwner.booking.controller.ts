@@ -72,7 +72,7 @@ export class FacilityOwnerBookingController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { bookingId } = req.params;
+      const { bookingId } = req.params as Record<string, string>;
 
       const result = await FacilityOwnerBookingService.getBookingDetail(
         ownerId,
@@ -123,7 +123,7 @@ export class FacilityOwnerBookingController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { notificationId } = req.params;
+      const { notificationId } = req.params as Record<string, string>;
 
       const notification = await OwnerNotificationService.markRead(
         ownerId,

@@ -252,7 +252,7 @@ export class FacilityOwnerDashboardService {
           as: "facility",
         },
       },
-      { $unwind: { path: "$facility", preserveNullAndEmpty: true } },
+      { $unwind: { path: "$facility", preserveNullAndEmptyArrays: true } },
       {
         $project: {
           facilityId: "$_id",

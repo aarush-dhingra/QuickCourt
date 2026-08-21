@@ -36,7 +36,7 @@ export class FacilityOwnerSlotController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId, courtId } = req.params;
+      const { facilityId, courtId } = req.params as Record<string, string>;
       const { date } = availabilityQuerySchema.parse(req.query);
 
       const result = await FacilityOwnerSlotService.getAvailability(
@@ -133,7 +133,7 @@ export class FacilityOwnerSlotController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { blockId } = req.params;
+      const { blockId } = req.params as Record<string, string>;
       const validated = updateMaintenanceBlockSchema.parse(req.body);
 
       const result = await FacilityOwnerSlotService.updateMaintenanceBlock(
@@ -166,7 +166,7 @@ export class FacilityOwnerSlotController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { blockId } = req.params;
+      const { blockId } = req.params as Record<string, string>;
 
       const result = await FacilityOwnerSlotService.deleteMaintenanceBlock(
         ownerId,

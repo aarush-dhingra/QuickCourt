@@ -5,13 +5,13 @@ import { z } from "zod";
 // ---------------------------------------------------------------------------
 export const createFacilitySchema = z.object({
   name: z
-    .string({ required_error: "Facility name is required" })
+    .string({ error: "Facility name is required" })
     .min(2, "Name must be at least 2 characters")
     .max(100)
     .trim(),
   description: z.string().max(1000).trim().optional().default(""),
   location: z
-    .string({ required_error: "Location is required" })
+    .string({ error: "Location is required" })
     .min(2, "Location must be at least 2 characters")
     .max(200)
     .trim(),

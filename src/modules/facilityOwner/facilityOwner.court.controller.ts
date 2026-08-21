@@ -24,7 +24,7 @@ export class FacilityOwnerCourtController {
   static async listCourts(req: Request, res: Response, next: NextFunction) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId } = req.params;
+      const { facilityId } = req.params as Record<string, string>;
       const result = await FacilityOwnerCourtService.listCourts(
         ownerId,
         facilityId
@@ -43,7 +43,7 @@ export class FacilityOwnerCourtController {
   static async createCourt(req: Request, res: Response, next: NextFunction) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId } = req.params;
+      const { facilityId } = req.params as Record<string, string>;
 
       const validated = createCourtSchema.parse(req.body);
       const result = await FacilityOwnerCourtService.createCourt(
@@ -72,7 +72,7 @@ export class FacilityOwnerCourtController {
   static async updateCourt(req: Request, res: Response, next: NextFunction) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId, courtId } = req.params;
+      const { facilityId, courtId } = req.params as Record<string, string>;
 
       const validated = updateCourtSchema.parse(req.body);
       const result = await FacilityOwnerCourtService.updateCourt(
@@ -106,7 +106,7 @@ export class FacilityOwnerCourtController {
   ) {
     try {
       const ownerId = req.user!.id;
-      const { facilityId, courtId } = req.params;
+      const { facilityId, courtId } = req.params as Record<string, string>;
 
       const result = await FacilityOwnerCourtService.softDeleteCourt(
         ownerId,
