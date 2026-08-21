@@ -9,6 +9,9 @@ import {
   ConflictError,
   ForbiddenError,
 } from "../../utils/errors";
+// Facility-owner integration: maintenance conflict check + booking notification
+import { MaintenanceSlot } from "../facilityOwner/maintenanceSlot.model";
+import { OwnerNotificationService } from "../facilityOwner/facilityOwner.notification.service";
 
 export class BookingService {
   static async createBooking(userId: string, input: CreateBookingInput) {
@@ -89,6 +92,20 @@ export class BookingService {
       throw new ConflictError("Court is already booked for this time slot", "SLOT_UNAVAILABLE");
     }
 
+    // 7a. Check maintenance blocks — reject if this slot is under maintenance
+    const isUnderMaintenance = await MaintenanceSlot.isSlotBlockedByMaintenance(
+      input.courtId,
+      input.bookingDate,
+      input.startTime,
+      endTime
+    );
+    if (isUnderMaintenance) {
+      throw new ConflictError(
+        "This court slot is blocked for maintenance",
+        "SLOT_UNDER_MAINTENANCE"
+      );
+    }
+
     // 8. Calculate price from court (server-side)
     const amount = court.pricePerHour;
 
@@ -115,6 +132,17 @@ export class BookingService {
       await Facility.findByIdAndUpdate(input.facilityId, {
         $inc: { bookingCount: 1 },
       });
+
+      // Notify the facility owner about this new booking (fire-and-forget)
+      void OwnerNotificationService.trigger(
+        facility.ownerId.toString(),
+        "NEW_BOOKING",
+        (booking._id as import("mongoose").Types.ObjectId).toString(),
+        `New booking for "${facility.name}" — Court: ${court.name}, ` +
+          `Date: ${booking.bookingDate}, Time: ${booking.startTime}–${endTime}`
+      ).catch((err) =>
+        console.error("[Notification] Failed to trigger owner notification:", err)
+      );
 
       return {
         id: booking._id,
